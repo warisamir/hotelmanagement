@@ -2,8 +2,10 @@ package com.rockhardy.airbnb.service;
 
 import com.rockhardy.airbnb.dto.HotelDto;
 import com.rockhardy.airbnb.entity.Hotel;
+import com.rockhardy.airbnb.entity.Room;
 import com.rockhardy.airbnb.exception.ResourceNotFoundException;
 import com.rockhardy.airbnb.repository.HotelRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class HotelServiceImpl implements HotelService{
     private final HotelRepository hotelRepository;
     private final ModelMapper modelMapper;
+    private final InventoryService inventoryService;
     @Override
     public HotelDto createHotel(HotelDto hotelDto) {
          log.info("Create a new hotel with name: {}",hotelDto.getName());
@@ -39,7 +42,7 @@ public class HotelServiceImpl implements HotelService{
 
     @Override
     public HotelDto updateHotelById(Long id,HotelDto hotelDto) {
-        log.info("updagting the hotel by Id: {}", id);
+        log.info("updating the hotel by Id: {}", id);
         Hotel hotel= hotelRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with Id: " + id));
@@ -50,20 +53,31 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
+    @Transactional
     public void deleteHotelById(Long id) {
         boolean exist= hotelRepository.existsById(id);
         if(!exist) throw new ResourceNotFoundException("Hotel not found with Id: " + id);
         hotelRepository.deleteById(id);
+        Hotel hotel=hotelRepository
+                .findById(id)
+                .orElseThrow(()->new ResourceNotFoundException("Hotel with this hotel Id: does not exist"+id));
+        for(Room room:hotel.getRooms()) {
+            inventoryService.deleteFutureInventories(room);
+        }
         return ;
     }
 
     @Override
+    @Transactional
     public void activatehotel(Long id) {
         log.info("Activating the hotel with id: {}" ,id);
         Hotel hotel=hotelRepository
                 .findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Hotel with this hotel Id: does not exist"+id));
         hotel.setActive(true);
+        for(Room room:hotel.getRooms()){
+            inventoryService.initializedRoomforAYear(room);
+        }
     }
 
 }

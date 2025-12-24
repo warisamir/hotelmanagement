@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class Room {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="hotel_id",nullable = false)
@@ -25,7 +25,7 @@ public class Room {
     private String type;
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal basePrice;
-    @Column( columnDefinition = "TEXT[]")
+    @Column(columnDefinition = "TEXT[]")
     private String[] photos;
     @Column(columnDefinition = "TEXT[]")
     private String[] amenities;
@@ -40,7 +40,4 @@ public class Room {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @Column(nullable = false)
-    private Boolean active;
 }
