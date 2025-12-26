@@ -2,12 +2,12 @@ package com.rockhardy.airbnb.entity;
 
 import com.rockhardy.airbnb.entity.enums.BookingStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.ManyToAny;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -15,6 +15,9 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +35,7 @@ public class Booking {
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
     @Column(nullable = false)
-    private Integer roomCount;
+    private Integer roomsCount;
     @Column(nullable = false)
     private LocalDate checkInDate;
     @Column(nullable = false)
@@ -42,11 +45,7 @@ public class Booking {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name ="payment_id")
-    private Payment payment;
-
-    @Enumerated(EnumType.STRING )
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus bookingStatus;
 
@@ -56,4 +55,7 @@ public class Booking {
             inverseJoinColumns = @JoinColumn(name = "guest_id")
     )
     private Set<Guest> guests;
+
+    @Column(nullable = false, precision = 10, scale=2)
+    private BigDecimal amount;
 }

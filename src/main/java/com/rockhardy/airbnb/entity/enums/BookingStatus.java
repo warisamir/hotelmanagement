@@ -3,5 +3,8 @@ package com.rockhardy.airbnb.entity.enums;
 public enum BookingStatus {
     CONFIRMED,
     FAILED,
-    RESERVED
+    RESERVED,
+    GUESTS_ADDED,
+    PAYMENT_PENDING,
+    EXPIRED
 }
