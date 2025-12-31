@@ -2,6 +2,7 @@ package com.rockhardy.airbnb.controller;
 
 import com.rockhardy.airbnb.dto.HotelDto;
 import com.rockhardy.airbnb.dto.HotelInfoDto;
+import com.rockhardy.airbnb.dto.HotelPriceDto;
 import com.rockhardy.airbnb.dto.HotelSearchRequest;
 import com.rockhardy.airbnb.service.HotelService;
 import com.rockhardy.airbnb.service.InventoryService;
@@ -20,8 +21,8 @@ public class HotelBrowseController {
     InventoryService inventoryService;
     HotelService hotelService;
     @GetMapping("/search")
-    public ResponseEntity<Page<HotelDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
-        Page<HotelDto> page =inventoryService.searchHotel(hotelSearchRequest);
+    public ResponseEntity<Page<HotelPriceDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
+        var page =inventoryService.searchHotel(hotelSearchRequest);
         return ResponseEntity.ok(page);
     }
     @GetMapping("/{hotelId}/info")

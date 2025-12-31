@@ -5,7 +5,7 @@ import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
-public class    HotelDto {
+public class HotelDto {
     private Long id;
     private String name;
     private String city;
